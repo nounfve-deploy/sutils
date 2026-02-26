@@ -8,3 +8,7 @@ macro_rules! MOD_USE_ALL {
         struct UseAll;
     };
 }
+
+/// some func
+/// 
+pub use sutils_macro::FnWrap;

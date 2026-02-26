@@ -2,8 +2,8 @@
 
 mod context_func;
 mod into_lifetime;
-mod singleton;
 mod macros;
+mod singleton;
 
-#[crate::macros::mod_use_all]
+#[crate::macros::mod_use_all] 
 struct UseAll;
