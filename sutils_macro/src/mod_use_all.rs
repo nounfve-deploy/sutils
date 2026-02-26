@@ -1,4 +1,4 @@
-use std::{collections::HashSet, env};
+use std::{collections::HashSet, env, path::PathBuf};
 
 use proc_macro2::TokenStream;
 use quote::{ToTokens, format_ident, quote};
@@ -7,12 +7,12 @@ use syn::{File, Item, parse2};
 pub fn mod_use_all_macro(_attr: TokenStream, _item: TokenStream) -> TokenStream {
     let manifest_dir = env::var("CARGO_MANIFEST_DIR").expect("Failed to get CARGO_MANIFEST_DIR");
     let file = proc_macro::Span::call_site().file();
-    if file.is_empty(){
-        panic!("{file} empty site")
-    }
-    let file = format!("{manifest_dir}/{file}");
-    let body = std::fs::read_to_string(&file)
-        .expect(&format!("read file error {file}"))
+    let mut path = PathBuf::new();
+    path.push(manifest_dir);
+    path.push(file);
+
+    let body = std::fs::read_to_string(&path)
+        .expect(&format!("read file error {path:?}"))
         .parse::<TokenStream>()
         .expect("parse token stream failed");
     let File { items, .. } = parse2(body).expect("parse failed");

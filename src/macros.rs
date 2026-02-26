@@ -9,6 +9,4 @@ macro_rules! MOD_USE_ALL {
     };
 }
 
-/// some func
-/// 
 pub use sutils_macro::FnWrap;
