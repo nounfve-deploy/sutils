@@ -1,7 +1,7 @@
 use sutils::{ContextFunction, Singleton};
 
 #[Singleton]
-struct FooSingleton {
+pub struct FooSingleton {
     u8: u8,
 }
 
