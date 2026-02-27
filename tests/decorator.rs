@@ -2,6 +2,7 @@ use sutils::FnWrap;
 
 macro_rules! is_same {
     () => {
+        #[allow(unused)]
         pub fn __wrapper__(input: i8) -> bool {
             let output: i8 = __inner__(input.into()).into();
             output == input
@@ -23,7 +24,7 @@ fn is_odd(input: i8) -> bool {
 fn testing_ambiguous_decorator() {
     assert!(is_positive(1));
     assert!(is_odd(0));
-    
+
     assert!(!is_positive(2));
     assert!(!is_odd(2));
 }

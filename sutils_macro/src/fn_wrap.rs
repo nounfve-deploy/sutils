@@ -14,6 +14,7 @@ pub fn fn_wrap_macro(attr: TokenStream, item: TokenStream) -> TokenStream {
     let submod = quote! {
         #[allow(non_snake_case)]
         mod #submod_ident {
+            use super::*;
             #attr ! {} 
             #inner
         }
