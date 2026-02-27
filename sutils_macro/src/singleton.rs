@@ -25,7 +25,7 @@ pub fn singleton_macro(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 }
             }
 
-            fn OneSafe<'l>() -> sutils::SideGuardStruct<'l, Self> {
+            fn OneSafe<'l>() -> sutils::SideLock<'l, Self> {
                 unsafe {
                     #[allow(static_mut_refs)]
                     let guard = #submod_ident :: __MX__.lock().unwrap();
