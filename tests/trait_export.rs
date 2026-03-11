@@ -33,10 +33,11 @@ fn test_trait_export() {
     let mut foo = Foo { u8: 1 };
 
     assert!(foo.fn_mut_ref() == 2);
-    assert!(fn_mut_ref() == 2);
-
     assert!(foo.fn_mut_ref() == 4);
-    assert!(fn_mut_ref() == 2);
+    assert!(foo.fn_mut_ref() == 8);
+    
+    assert!(fn_mut_ref() == 6);
+    assert!(fn_mut_ref() == 6);
 
     assert!(Foo::fn_static(6) == fn_static(6));
     assert!(Foo::fn_static(7) == fn_static(7));

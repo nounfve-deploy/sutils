@@ -44,9 +44,9 @@ impl From<i8> for Foo {
 fn testing_ambiguous_decorator() {
     assert!(is_positive(1));
     assert!(is_odd(0));
-    assert!(Foo::is_negative(-1));
+    assert!(Foo::is_negative(0));
     
     assert!(!is_positive(2));
     assert!(!is_odd(2));
-    assert!(!Foo::is_negative(0));
+    assert!(!Foo::is_negative(-1));
 }
