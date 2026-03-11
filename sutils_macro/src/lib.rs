@@ -1,9 +1,14 @@
 use proc_macro::TokenStream;
 
+mod ext;
 mod fn_wrap;
 mod mod_use_all;
 mod singleton;
-use crate::{fn_wrap::fn_wrap_macro, mod_use_all::mod_use_all_macro, singleton::singleton_macro};
+mod trait_export;
+use crate::{
+    fn_wrap::fn_wrap_macro, mod_use_all::mod_use_all_macro, singleton::singleton_macro,
+    trait_export::trait_export,
+};
 
 macro_rules! macro_debug {
     ($token:expr) => {{
@@ -29,4 +34,10 @@ pub fn mod_use_all(attr: TokenStream, item: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn FnWrap(attr: TokenStream, item: TokenStream) -> TokenStream {
     macro_debug!(fn_wrap_macro(attr.into(), item.into()).into())
+}
+
+#[allow(non_snake_case)]
+#[proc_macro_attribute]
+pub fn TraitExport(attr: TokenStream, item: TokenStream) -> TokenStream {
+    macro_debug!(trait_export(attr.into(), item.into()).into())
 }

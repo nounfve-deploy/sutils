@@ -10,3 +10,4 @@ macro_rules! MOD_USE_ALL {
 }
 
 pub use sutils_macro::FnWrap;
+pub use sutils_macro::TraitExport;
