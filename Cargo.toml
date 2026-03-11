@@ -3,6 +3,9 @@ name = "sutils"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+macro_debug = ["sutils_macro/macro_debug"]
+
 [dependencies]
 sutils_macro = { path = "./sutils_macro/" }
 
