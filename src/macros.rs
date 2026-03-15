@@ -1,6 +1,6 @@
 pub use sutils_macro::mod_use_all;
 
-#[deprecated="*ONLY* works when inlined,"]
+#[deprecated = "*ONLY* works when inlined,"]
 #[macro_export]
 macro_rules! MOD_USE_ALL {
     () => {
@@ -10,4 +10,5 @@ macro_rules! MOD_USE_ALL {
 }
 
 pub use sutils_macro::FnWrap;
+pub use sutils_macro::PutInMacro;
 pub use sutils_macro::TraitExport;

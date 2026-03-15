@@ -1,4 +1,4 @@
-use sutils::FnWrap;
+use sutils::{FnWrap, PutInMacro};
 
 macro_rules! is_same {
     ($wrap:ident,$origin:ident,$ns:tt) => {
@@ -45,8 +45,25 @@ fn testing_ambiguous_decorator() {
     assert!(is_positive(1));
     assert!(is_odd(0));
     assert!(Foo::is_negative(0));
-    
+
     assert!(!is_positive(2));
     assert!(!is_odd(2));
     assert!(!Foo::is_negative(-1));
+}
+
+#[test]
+fn testing_put_in_macro() {
+    macro_rules! Override {
+        (const $val:ident$($drop:tt)+) => {
+            const $val: i32 = 2;
+        };
+    }
+
+    #[PutInMacro(Override)]
+    const X: i32 = 1;
+
+    #[PutInMacro(Override)]
+    const Y: &str = "-2";
+
+    assert!(X == Y);
 }
