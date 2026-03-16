@@ -74,7 +74,6 @@ impl FnSigParsed {
         let this = this.map(|this| quote! { #this, });
         let input = var_bind
             .iter()
-            .map(|arg| quote! { #arg, })
             .collect::<Punctuated<_, Token![,]>>();
         quote! {
             fn #id(#this #input) #ret_ty
@@ -85,7 +84,7 @@ impl FnSigParsed {
         let input = self
             .var_bind
             .iter()
-            .map(|PatType { pat, .. }| quote! { #pat, })
+            .map(|PatType { pat, .. }| quote! { #pat })
             .collect::<Punctuated<_, Token![,]>>();
         quote! { #input }
     }
