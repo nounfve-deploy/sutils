@@ -54,13 +54,13 @@ fn testing_ambiguous_decorator() {
 #[test]
 fn testing_put_in_macro() {
     macro_rules! Override {
-        (const $val:ident$($drop:tt)+) => {
+        (const $val:ident : $t:ty = $expr:expr; $(,i32)?) => {
             const $val: i32 = 2;
         };
     }
 
-    #[PutInMacro(Override)]
-    const X: i32 = 1;
+    #[PutInMacro(Override, i32)]
+    const X: i32 = 0;
 
     #[PutInMacro(Override)]
     const Y: &str = "-2";
