@@ -1,9 +1,17 @@
+use std::collections::HashSet;
+
+use crate::ext::punctuated::PunctuatedExt;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{ItemStruct, parse2};
+use syn::{Ident, ItemStruct, Token, parse2, punctuated::Punctuated};
 
-pub fn singleton_macro(_attr: TokenStream, item: TokenStream) -> TokenStream {
+pub fn singleton_macro(attr: TokenStream, item: TokenStream) -> TokenStream {
     let ItemStruct { ident, .. } = parse2(item.clone()).unwrap();
+    let attr = <Punctuated<Ident, Token![,]>>::parse2(attr)
+        .expect("parse decor failed")
+        .iter()
+        .map(|ident| ident.to_string())
+        .collect::<HashSet<_>>();
 
     let submod_ident = format_ident!("{ident}__singleton__");
     let impl_singleton = quote! {
@@ -17,9 +25,7 @@ pub fn singleton_macro(_attr: TokenStream, item: TokenStream) -> TokenStream {
             fn One<'r>() -> &'r mut Self {
                 unsafe {
                     if #submod_ident :: __ONE__ == std::ptr::null_mut() {
-                        let boxed = Box::new(Self::default());
-                        let ptr = Box::into_raw(boxed);
-                        #submod_ident :: __ONE__ = ptr;
+                        <Self as sutils::Singleton>::Set(Self::default());
                     }
                     &mut * #submod_ident :: __ONE__
                 }
@@ -33,11 +39,36 @@ pub fn singleton_macro(_attr: TokenStream, item: TokenStream) -> TokenStream {
                     guard.side_guard(Self::One())
                 }
             }
+
+            fn Set(self){
+                unsafe{
+                    if #submod_ident :: __ONE__ != std::ptr::null_mut() {
+                        drop(Box::from_raw(#submod_ident :: __ONE__ ));
+                    }
+                    let boxed = Box::new(self);
+                    let ptr = Box::into_raw(boxed);
+                    #submod_ident :: __ONE__ = ptr;
+                }
+            }
         }
+    };
+
+    let zeroed = if attr.contains("zeroed") {
+        Some(quote! {
+            impl Default for #ident {
+                fn default() -> Self {
+                    #[allow(invalid_value)]
+                    unsafe { std::mem::MaybeUninit::zeroed().assume_init() }
+                }
+            }
+        })
+    } else {
+        None
     };
 
     quote! {
         #item
         #impl_singleton
+        #zeroed
     }
 }

@@ -7,6 +7,7 @@ use crate::ChainedStruct;
 pub trait Singleton {
     fn One<'r>() -> &'r mut Self;
     fn OneSafe<'r>() -> SideLock<'r, Self>;
+    fn Set(self);
 }
 
 pub type SideLock<'r, T> = ChainedStruct<MutexGuard<'r, ()>, &'r mut T>;

@@ -1,4 +1,4 @@
-use std::thread;
+use std::{sync::Arc, thread};
 
 use sutils::{ContextFunction, Singleton};
 
@@ -12,6 +12,9 @@ impl Default for FooSingleton {
         Self { u8: 2 }
     }
 }
+
+#[Singleton(zeroed)]
+struct InvalidZero(Arc<i32>);
 
 #[test]
 fn test_singleton() {
@@ -31,4 +34,7 @@ fn test_singleton() {
     _ = (t1.join(), t2.join());
 
     assert_eq!(one.u8, 120);
+
+    InvalidZero::Set(InvalidZero(Arc::new(2)));
+    assert!(*InvalidZero::One().0 == 2);
 }
