@@ -3,6 +3,7 @@
 mod chained_strcut;
 mod context_func;
 mod into_lifetime;
+mod into_variant;
 mod leak_box;
 mod macros;
 mod singleton;
@@ -11,6 +12,7 @@ mod unsafe_ref;
 pub use chained_strcut::*;
 pub use context_func::*;
 pub use into_lifetime::*;
+pub use into_variant::*;
 pub use leak_box::*;
 pub use macros::*;
 pub use singleton::*;
