@@ -1,11 +1,11 @@
-use std::marker::PhantomData;
+use std::{marker::PhantomData, ops::{Deref, DerefMut}};
 
 pub trait UnsafeRefTrait<T> {
     fn unsafe_ref(self) -> UnsafeRef<T>;
 }
 
 pub trait UnsafeMutTrait<T> {
-    fn unsafe_mut(self) -> UnsafeMut<T>;
+    fn unsafe_mut(self) -> UnsafeRef<T>;
 }
 
 impl<T> UnsafeRefTrait<T> for &T {
@@ -16,32 +16,34 @@ impl<T> UnsafeRefTrait<T> for &T {
 }
 
 impl<T> UnsafeMutTrait<T> for &mut T {
-    fn unsafe_mut(self) -> UnsafeMut<T> {
+    fn unsafe_mut(self) -> UnsafeRef<T> {
         let ptr = self as *const T as usize;
-        UnsafeMut(UnsafeRef(ptr, PhantomData))
+        UnsafeRef(ptr, PhantomData)
     }
 }
 
 pub struct UnsafeRef<T>(usize, PhantomData<T>);
-pub struct UnsafeMut<T>(UnsafeRef<T>);
 
-impl<T> UnsafeMut<T> {
+impl<T> UnsafeRef<T> {
     pub fn must_mut(&self) -> &mut T {
-        let ptr = self.0.0;
+        let ptr = self.0;
         unsafe { &mut *(ptr as *mut T) }
     }
 }
 
-impl<T> AsRef<T> for UnsafeRef<T> {
-    fn as_ref(&self) -> &T {
+impl<T> Deref for UnsafeRef<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
         let ptr = self.0;
-        unsafe { &*(ptr as *const T) }
+        unsafe { &mut *(ptr as *mut T) }
     }
 }
 
-impl<T> AsMut<T> for UnsafeMut<T> {
-    fn as_mut(&mut self) -> &mut T {
-        self.must_mut()
+impl<T> DerefMut for UnsafeRef<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        let ptr = self.0;
+        unsafe { &mut *(ptr as *mut T) }
     }
 }
 
@@ -52,10 +54,3 @@ impl<T> Clone for UnsafeRef<T> {
 }
 
 impl<T> Copy for UnsafeRef<T> {}
-
-impl<T> Clone for UnsafeMut<T> {
-    fn clone(&self) -> Self {
-        Self(self.0)
-    }
-}
-impl<T> Copy for UnsafeMut<T> {}
