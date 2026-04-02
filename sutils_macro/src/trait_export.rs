@@ -1,4 +1,4 @@
-use crate::ext::signature::SigExt;
+use crate::ext::signature::SignatureExt;
 use proc_macro2::TokenStream;
 use quote::{ToTokens, quote};
 use syn::{ImplItemFn, ItemImpl, parse2};
@@ -33,7 +33,7 @@ pub fn trait_export(attr: TokenStream, item: TokenStream) -> TokenStream {
             _ => None,
         })
         .map(|ImplItemFn { sig, .. }| {
-            let mut parse = sig.parse();
+            let mut parse = sig.parse_signature();
             (parse.this.take(), parse)
         })
         .map(|(this, parse)| {

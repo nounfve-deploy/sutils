@@ -35,6 +35,13 @@ impl<T: ?Sized> LeakBox<T> {
         }
         drop(self.into_box())
     }
+    
+    pub fn cast_to<Other: ?Sized>(self) -> LeakBox<Other> {
+        LeakBox {
+            ptr: self.ptr,
+            inner: PhantomData,
+        }
+    }
 }
 
 impl<T: ?Sized> From<Box<T>> for LeakBox<T> {

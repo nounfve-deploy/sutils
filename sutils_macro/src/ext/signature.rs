@@ -3,14 +3,14 @@ use quote::{ToTokens, format_ident, quote};
 use syn::{FnArg, Ident, PatType, Receiver, ReturnType, Signature, Token, punctuated::Punctuated};
 
 #[allow(unused)]
-pub trait SigExt {
-    fn parse(&self) -> FnSigParsed;
+pub trait SignatureExt {
+    fn parse_signature(&self) -> FnSigParsed;
     fn lambda_sig(&self) -> TokenStream;
     fn to_inner_fn(&self) -> Self;
 }
 
-impl SigExt for Signature {
-    fn parse(&self) -> FnSigParsed {
+impl SignatureExt for Signature {
+    fn parse_signature(&self) -> FnSigParsed {
         let id = self.ident.clone();
         let mut this = None;
         let var_bind = self
@@ -34,7 +34,7 @@ impl SigExt for Signature {
     }
 
     fn lambda_sig(&self) -> TokenStream {
-        let FnSigParsed { this, var_bind, .. } = self.parse();
+        let FnSigParsed { this, var_bind, .. } = self.parse_signature();
         let this = this.map(|_| quote! { _self, });
         let input = var_bind
             .iter()
