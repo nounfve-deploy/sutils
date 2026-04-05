@@ -7,6 +7,7 @@ edition = "2024"
 macro_debug = ["sutils_macro/macro_debug"]
 
 [dependencies]
+paste = "1.0.15"
 sutils_macro = { path = "./sutils_macro/" }
 
 [workspace]
