@@ -10,6 +10,7 @@ mod singleton;
 mod thread_contest;
 mod unsafe_ref;
 pub mod external;
+pub mod extension;
 
 pub use chained_strcut::*;
 pub use context_func::*;

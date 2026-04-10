@@ -15,27 +15,32 @@ pub use sutils_macro::TraitExport;
 
 #[macro_export]
 macro_rules! DEFINE {
-    ($Var:ident= $($Body:expr),*) => {
-        DEFINE!{impl $Var= $($Body,)*}
+    ($Var:ident= $($Body:tt)*) => {
+        DEFINE!{impl
+            #[allow(unused_macros)]
+            $Var= $($Body)*
+        }
         #[allow(unused)]
         use $Var;
     };
-    (pub $Var:ident= $($Body:expr),*) => {
+    (pub $Var:ident= $($Body:tt)*) => {
         DEFINE!{impl
             #[doc(hidden)]
             #[macro_export]
-            $Var= $($Body,)*
+            $Var= $($Body)*
         }
         pub use $Var;
     };
     (impl
         $(#[$Meta:meta])*
-        $Var:ident= $($Body:expr,)*
+        $Var:ident= $($Body:tt)*
     )=>{
         $(#[$Meta])*
         macro_rules! $Var {
-            ()=> { ($($Body),*)};
-            (const)=>{concat!($($Body,)*)};
+            ()=> { $($Body)*};
+            (^$head:tt)=> { $head $($Body)*};
+            (use $ident:ident)=> { $ident!($($Body)*)};
+            (const)=>{concat!($($Body)*)};
         }
     };
 }

@@ -107,13 +107,13 @@ pub trait TypedInto
 where
     Self: Sized,
 {
-    fn inTo<I>(self) -> I
+    fn INTO<I>(self) -> I
     where
         Self: Into<I>;
 }
 
 impl<T> TypedInto for T {
-    fn inTo<I>(self) -> I
+    fn INTO<I>(self) -> I
     where
         Self: Into<I>,
     {

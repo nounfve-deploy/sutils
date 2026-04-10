@@ -30,7 +30,7 @@ impl ThreadContext {
 
     pub fn set<T: 'static>(&mut self, val: T) -> Option<T> {
         let type_id = TypeId::of::<T>();
-        let leak = Box::new(val).inTo::<LeakBox<T>>();
+        let leak = Box::new(val).INTO::<LeakBox<T>>();
         let old = self.get::<T>();
         self.values
             .insert(type_id, leak.cast_to())
