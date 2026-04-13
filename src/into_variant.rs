@@ -21,23 +21,21 @@ where
 }
 
 #[allow(nonstandard_style)]
-pub trait IntoOption<T>
+pub trait IntoOption
 where
     Self: Sized,
 {
-    fn Some(self) -> Option<T>;
-    fn None(&self) -> Option<T>;
+    fn Some(self) -> Option<Self>;
+    fn None(&self) -> Option<Self>;
 }
 
-impl<T, This> IntoOption<T> for This
-where
-    This: Into<T>,
+impl<This> IntoOption for This
 {
-    fn Some(self) -> Option<T> {
-        Some(self.into())
+    fn Some(self) -> Option<Self> {
+        Some(self)
     }
 
-    fn None(&self) -> Option<T> {
+    fn None(&self) -> Option<Self> {
         None
     }
 }
