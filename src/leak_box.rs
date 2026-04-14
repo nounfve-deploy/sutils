@@ -1,28 +1,24 @@
-use std::{marker::PhantomData, ptr};
+use super::unsafe_ref::UnsafeRef;
 
 #[derive(Clone, Copy)]
 pub struct LeakBox<T: ?Sized> {
-    ptr: [u8; 16],
-    inner: PhantomData<T>,
+    refer: UnsafeRef<T>,
 }
 
 impl<T: ?Sized> LeakBox<T> {
     pub fn new() -> Self {
         Self {
-            ptr: [0; _],
-            inner: PhantomData,
+            refer: UnsafeRef::new(UnsafeRef::null_unsized()),
         }
     }
 
     pub fn set_pointer(mut self, ptr: *mut T) -> Self {
-        assert!(size_of::<*mut T>() <= size_of::<Self>());
-        self.ptr = unsafe { ptr::read(&ptr as *const *mut T as *const [u8; _]) };
+        self.refer = UnsafeRef::new(ptr as *const T);
         self
     }
 
     pub fn get_mut(&self) -> &mut T {
-        let ptr = unsafe { ptr::read(&self.ptr as *const [u8; _] as *const *mut T) };
-        unsafe { &mut *ptr }
+        self.refer.must_mut()
     }
 
     pub fn into_box(self) -> Box<T> {
@@ -30,16 +26,15 @@ impl<T: ?Sized> LeakBox<T> {
     }
 
     pub fn drop(self) {
-        if self.ptr == [0; _] {
+        if self.refer.0 == [0; _] {
             return;
         }
         drop(self.into_box())
     }
-    
+
     pub fn cast_to<Other: ?Sized>(self) -> LeakBox<Other> {
         LeakBox {
-            ptr: self.ptr,
-            inner: PhantomData,
+            refer: self.refer.assert(),
         }
     }
 }
