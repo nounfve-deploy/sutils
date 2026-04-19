@@ -5,8 +5,8 @@ mod fn_wrap;
 mod mod_use_all;
 mod put_in_macro;
 mod singleton;
-mod trait_export;
 mod sutils;
+mod trait_export;
 
 use crate::{
     fn_wrap::fn_wrap_macro, mod_use_all::mod_use_all_macro, put_in_macro::put_in_macro,

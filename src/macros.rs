@@ -29,6 +29,7 @@ macro_rules! DEFINE {
             #[macro_export]
             $Var= $($Body)*
         }
+        #[doc(inlined)]
         pub use $Var;
     };
     (impl
