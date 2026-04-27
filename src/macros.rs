@@ -29,7 +29,7 @@ macro_rules! DEFINE {
             #[macro_export]
             $Var= $($Body)*
         }
-        #[doc(inlined)]
+        #[doc(inline)]
         pub use $Var;
     };
     (impl
@@ -43,5 +43,21 @@ macro_rules! DEFINE {
             (use $ident:ident)=> { $ident!($($Body)*)};
             (const)=>{concat!($($Body)*)};
         }
+    };
+}
+
+#[macro_export]
+macro_rules! inline_macro {
+    (
+        $(#[$Meta:meta])*
+        macro_rules! $M:ident $($B:tt)*
+    ) => {
+        #[macro_export]
+        #[doc(hidden)]
+        $(#[$Meta])*
+        macro_rules! $M $($B)*
+        
+        #[doc(inline)]
+        pub use $M;
     };
 }
