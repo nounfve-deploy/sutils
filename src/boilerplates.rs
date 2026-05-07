@@ -38,3 +38,7 @@ DEFINE! {pub health= || -> String {
         .as_secs();
     format!("Ok @[{time}]:{}-{}", file!(), line!())
 }}
+
+DEFINE! {pub not_found=|uri: axum::http::Uri| {
+    (axum::http::StatusCode::NOT_FOUND, uri.to_string())
+}}
