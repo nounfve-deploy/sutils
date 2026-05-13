@@ -22,13 +22,32 @@ macro_rules! tracing_env_or_info {
 /// (R)eturn (I)nto res(P)onse
 #[PutInMacro(inline_macro)]
 macro_rules! RIP {
-    ($($expr:expr),*) => {
-        {
-            use axum::response::IntoResponse;
-            return IntoResponse::into_response(( $( ($expr) ),* ));
-        }
-    };
+    ($(@$F:ident)? $($expr:expr),*)=>{{
+        use axum::response::IntoResponse;
+        return $($F)? (IntoResponse::into_response(( $( $expr ),* )));
+    }};
 }
+
+DEFINE!(pub signal_await= async{
+    let ctrl_c = async {
+        tokio::signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
+
+    let terminate = async {
+        use tokio::signal::unix::*;
+        signal(SignalKind::terminate())
+            .expect("failed to install signal handler")
+            .recv()
+            .await;
+    };
+
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
+    }
+});
 
 DEFINE! {pub health= || -> String {
     use std::time::{SystemTime, UNIX_EPOCH};
