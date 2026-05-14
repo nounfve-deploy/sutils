@@ -1,6 +1,6 @@
 use syn::parse::{Parse, ParseStream, discouraged::Speculative};
 
-use crate::sutils::thread_contest::ThreadContext;
+use crate::sutils::thread_context::Context;
 
 #[allow(unused)]
 pub trait ParseExt<T> {
@@ -34,7 +34,7 @@ macro_rules! parse_tuple {
         use syn::parse::Parse;
         use syn::parse2;
         use crate::ext::tuple_parse::Tuple;
-        use crate::sutils::thread_contest::ThreadContext;
+        use crate::sutils::thread_context::Context;
 
         let func = |stream: ParseStream| -> syn::Result<_> {
             let result = ($(
@@ -44,7 +44,7 @@ macro_rules! parse_tuple {
         };
         let func = Box::new(func);
         let result = None;
-        ThreadContext::current().set(Tuple { func, result });
+        Context::current().set(Tuple { func, result });
         parse2::<Tuple<($(
             $T,
         )*)>>($stream).unwrap().result.unwrap()
@@ -55,7 +55,7 @@ pub(crate) use parse_tuple;
 
 impl<T: 'static> Parse for Tuple<T> {
     fn parse(input: ParseStream) -> syn::Result<Self> {
-        let Tuple { mut func, .. } = ThreadContext::current().get::<Self>().unwrap();
+        let Tuple { mut func, .. } = Context::current().take::<Self>().unwrap();
         let result = Some(func(input)?);
         Ok(Self { func, result })
     }

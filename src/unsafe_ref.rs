@@ -71,6 +71,9 @@ impl<T> Clone for UnsafeRef<T> {
 
 impl<T> Copy for UnsafeRef<T> {}
 
+unsafe impl<T: ?Sized> Send for UnsafeRef<T> {}
+unsafe impl<T: ?Sized> Sync for UnsafeRef<T> {}
+
 macro_rules! unsafe_ref_impl_for {
     ($Ref:ty) => {
         impl<T: ?Sized> UnsafeRefTrait<T> for &$Ref {

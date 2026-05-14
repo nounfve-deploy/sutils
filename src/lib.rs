@@ -7,7 +7,7 @@ mod into_variant;
 mod leak_box;
 mod macros;
 mod singleton;
-mod thread_contest;
+mod thread_context;
 mod unsafe_ref;
 pub mod external;
 pub mod extension;
@@ -20,7 +20,7 @@ pub use into_variant::*;
 pub use leak_box::*;
 pub use macros::*;
 pub use singleton::*;
-pub use thread_contest::*;
+pub use thread_context::*;
 pub use unsafe_ref::*;
 
 /// disabled since rust-analyzer not follow using statement in macro
