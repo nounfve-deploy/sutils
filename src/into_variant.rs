@@ -32,6 +32,7 @@ where
 {
     fn Some(self) -> Option<Self>;
     fn None(&self) -> Option<Self>;
+    fn Some_if(self, f: impl FnOnce(&Self) -> bool) -> Option<Self>;
 }
 
 impl<This> IntoOption for This {
@@ -41,5 +42,9 @@ impl<This> IntoOption for This {
 
     fn None(&self) -> Option<Self> {
         None
+    }
+
+    fn Some_if(self, f: impl FnOnce(&Self) -> bool) -> Option<Self> {
+        if f(&self) { Some(self) } else { None }
     }
 }

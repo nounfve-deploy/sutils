@@ -6,6 +6,15 @@ pub struct LeakBox<T: ?Sized> {
     pub ptr: UnsafeRef<T>,
 }
 
+impl<T: ?Sized> Clone for LeakBox<T> {
+    fn clone(&self) -> Self {
+        Self {
+            ptr: UnsafeRef::new(self.get_mut()),
+        }
+    }
+}
+impl<T: ?Sized> Copy for LeakBox<T> {}
+
 impl<T: ?Sized> LeakBox<T> {
     pub fn new() -> Self {
         Self {
@@ -33,6 +42,10 @@ impl<T: ?Sized> LeakBox<T> {
         drop(self.into_box())
     }
 
+    pub fn guarded(self) -> LeakBoxGuard<T> {
+        LeakBoxGuard { ptr: self }
+    }
+
     pub fn cast_to<Other: ?Sized>(self) -> LeakBox<Other> {
         LeakBox {
             ptr: self.ptr.assert(),
@@ -51,5 +64,15 @@ impl<T> Deref for LeakBox<T> {
 
     fn deref(&self) -> &Self::Target {
         &self.ptr
+    }
+}
+
+pub struct LeakBoxGuard<T: ?Sized> {
+    pub ptr: LeakBox<T>,
+}
+
+impl<T: ?Sized> Drop for LeakBoxGuard<T> {
+    fn drop(&mut self) {
+        self.ptr.drop();
     }
 }

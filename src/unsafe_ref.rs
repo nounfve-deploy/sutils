@@ -49,7 +49,7 @@ impl<T: ?Sized> UnsafeRef<T> {
     }
 }
 
-impl<T> Deref for UnsafeRef<T> {
+impl<T: ?Sized> Deref for UnsafeRef<T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -57,19 +57,19 @@ impl<T> Deref for UnsafeRef<T> {
     }
 }
 
-impl<T> DerefMut for UnsafeRef<T> {
+impl<T: ?Sized> DerefMut for UnsafeRef<T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         self.must_mut()
     }
 }
 
-impl<T> Clone for UnsafeRef<T> {
+impl<T: ?Sized> Clone for UnsafeRef<T> {
     fn clone(&self) -> Self {
         Self(self.0, self.1)
     }
 }
 
-impl<T> Copy for UnsafeRef<T> {}
+impl<T: ?Sized> Copy for UnsafeRef<T> {}
 
 unsafe impl<T: ?Sized> Send for UnsafeRef<T> {}
 unsafe impl<T: ?Sized> Sync for UnsafeRef<T> {}
