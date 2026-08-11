@@ -49,6 +49,18 @@ impl<T: ?Sized> UnsafeRef<T> {
     }
 }
 
+impl<T> PartialEq<&T> for UnsafeRef<T> {
+    fn eq(&self, other: &&T) -> bool {
+        self.raw_mut() as *const T == *other as *const T
+    }
+}
+
+impl<T> PartialEq<&mut T> for UnsafeRef<T> {
+    fn eq(&self, other: &&mut T) -> bool {
+        *self == &**other
+    }
+}
+
 impl<T: ?Sized> Deref for UnsafeRef<T> {
     type Target = T;
 
