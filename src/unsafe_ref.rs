@@ -1,3 +1,4 @@
+use super::into_lifetime::IntoLifeTime;
 use std::{
     marker::PhantomData,
     ops::{Deref, DerefMut},
@@ -38,8 +39,12 @@ impl<T: ?Sized> UnsafeRef<T> {
         ptr
     }
 
-    pub fn must_mut(&self) -> &mut T {
-        unsafe { &mut *(self.raw_mut()) }
+    pub fn must_mut<'m>(&self) -> &'m mut T {
+        unsafe { &mut *(self.raw_mut()) }.into_lifetime()
+    }
+
+    pub fn cast_mut<'c, C>(&self) -> &'c mut C {
+        self.assert::<C>().must_mut()
     }
 
     pub const fn null_unsized() -> *mut T {
