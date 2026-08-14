@@ -1,6 +1,6 @@
 use crate::IntoLifeTime;
 
-pub trait IterDeref<'a, 'b, T> {
+pub trait IterDeref<'a, 'b, T: ?Sized> {
     fn deref_mut(self) -> impl Iterator<Item = &'b mut T>
     where
         Self: Iterator<Item = &'a mut &'b mut T>,
@@ -8,7 +8,7 @@ pub trait IterDeref<'a, 'b, T> {
         'b: 'a;
 }
 
-impl<'a, 'b, T, Iter> IterDeref<'a, 'b, T> for Iter {
+impl<'a, 'b, T: ?Sized, Iter> IterDeref<'a, 'b, T> for Iter {
     fn deref_mut(self) -> impl Iterator<Item = &'b mut T>
     where
         Self: Iterator<Item = &'a mut &'b mut T>,
