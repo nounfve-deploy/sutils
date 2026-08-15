@@ -48,3 +48,13 @@ impl<This> IntoOption for This {
         if f(&self) { Some(self) } else { None }
     }
 }
+
+pub trait IntoBox {
+    fn boxed(self) -> Box<Self>;
+}
+
+impl<T> IntoBox for T {
+    fn boxed(self) -> Box<Self> {
+        Box::new(self)
+    }
+}
