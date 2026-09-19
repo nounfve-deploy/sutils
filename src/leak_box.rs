@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use super::unsafe_ref::UnsafeRef;
 
-pub struct LeakBox<T: ?Sized> {
+pub struct LeakBox<T: ?Sized = ()> {
     pub ptr: UnsafeRef<T>,
 }
 

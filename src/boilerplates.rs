@@ -15,7 +15,7 @@ macro_rules! tracing_env_or_info {
             .finish();
         tracing::subscriber::set_global_default(subscriber)
             .expect("setting default subscriber failed");
-        tracing::info!("tracing init finish");
+        tracing::debug!("tracing init finish");
     }};
 }
 

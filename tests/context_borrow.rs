@@ -7,11 +7,23 @@ fn context_mut() {
     let context = Context::current();
     let mut x = 1u8;
     context.set((&mut x).into_lifetime());
-    
+
     **context.get::<&mut u8>().unwrap() += 1;
     **context.get::<&'static mut u8>().unwrap() += 1;
     assert!(x == 3);
 
+    {
+        let mut y = 1u16;
+        let _guard = context.set_mut(&mut y);
+        **context.get_cow::<&mut u16>().unwrap() *= 2;
+        *context.get_cow::<u16>().unwrap() *= 3;
+        assert!(y == 6)
+    }
+    assert!(context.get_cow::<u16>().is_none())
+}
+
+#[test]
+fn type_id() {
     assert!(
         HashSet::from([
             type_id_assert::<u8>(),
