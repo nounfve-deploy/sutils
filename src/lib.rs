@@ -5,13 +5,13 @@ mod context_func;
 mod into_lifetime;
 mod into_variant;
 mod leak_box;
-mod macros;
 mod singleton;
 mod thread_context;
 mod unsafe_ref;
 pub mod external;
 pub mod extension;
 pub mod boilerplates;
+pub mod macros;
 
 pub use chained_strcut::*;
 pub use context_func::*;

@@ -15,14 +15,6 @@ pub use sutils_macro::TraitExport;
 
 #[macro_export]
 macro_rules! DEFINE {
-    ($Var:ident= $($Body:tt)*) => {
-        DEFINE!{impl
-            #[allow(unused_macros)]
-            $Var= $($Body)*
-        }
-        #[allow(unused)]
-        use $Var;
-    };
     (pub $Var:ident= $($Body:tt)*) => {
         DEFINE!{impl
             #[doc(hidden)]
@@ -32,12 +24,20 @@ macro_rules! DEFINE {
         #[doc(inline)]
         pub use $Var;
     };
-    (impl
+    ($Vis:vis $Var:ident= $($Body:tt)*) => {
+        DEFINE!{$Vis impl
+            #[allow(unused_macros)]
+            $Var= $($Body)*
+        }
+        #[allow(unused)]
+        $Vis use $Var;
+    };
+    ($Vis:vis impl
         $(#[$Meta:meta])*
         $Var:ident= $($Body:tt)*
     )=>{
         $(#[$Meta])*
-        macro_rules! $Var {
+        $Vis macro_rules! $Var {
             ()=> { $($Body)*};
             (^$head:tt)=> { $head $($Body)*};
             (use $ident:ident)=> { $ident!($($Body)*)};
@@ -56,8 +56,19 @@ macro_rules! inline_macro {
         #[doc(hidden)]
         $(#[$Meta])*
         macro_rules! $M $($B)*
-        
+
         #[doc(inline)]
+        #[allow(unused)]
         pub use $M;
     };
 }
+
+#[sutils_macro::PutInMacro(inline_macro)]
+macro_rules! re_export {
+    (mod $M:ident) => {
+        mod $M;
+        pub use $M::*;
+    };
+}
+
+re_export!(mod command);
