@@ -12,6 +12,7 @@ macro_rules! MOD_USE_ALL {
 pub use sutils_macro::FnWrap;
 pub use sutils_macro::PutInMacro;
 pub use sutils_macro::TraitExport;
+pub use sutils_macro::ExternImpl;
 
 #[macro_export]
 macro_rules! DEFINE {
@@ -72,3 +73,4 @@ macro_rules! re_export {
 }
 
 re_export!(mod command);
+re_export!(mod exten_impl);
