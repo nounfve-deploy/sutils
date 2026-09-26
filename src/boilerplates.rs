@@ -1,6 +1,6 @@
 use sutils_macro::PutInMacro;
 
-use crate::{DEFINE, inline_macro};
+use crate::{inline_macro, macros::DEFINE};
 
 #[PutInMacro(inline_macro)]
 macro_rules! tracing_env_or_info {
@@ -49,7 +49,7 @@ DEFINE!(pub signal_await= async{
     }
 });
 
-DEFINE! {pub health= || -> String {
+DEFINE! {pub health = || -> String {
     use std::time::{SystemTime, UNIX_EPOCH};
     let time = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -58,6 +58,40 @@ DEFINE! {pub health= || -> String {
     format!("Ok @[{time}]:{}-{}", file!(), line!())
 }}
 
-DEFINE! {pub not_found=|uri: axum::http::Uri| {
+DEFINE! {pub not_found = |uri: axum::http::Uri| {
     (axum::http::StatusCode::NOT_FOUND, uri.to_string())
 }}
+
+DEFINE! {pub tokio_rt_singleton =
+    use sutils::Singleton;
+    use tokio::runtime::{Builder, Runtime};
+
+    #[Singleton]
+    pub struct TokioSingleton {
+        rt: Runtime,
+    }
+
+    pub trait TokioSingletonImpls<T> {
+        fn await_singleton(self) -> T;
+    }
+
+    impl<F, T> TokioSingletonImpls<T> for F
+    where
+        F: Future<Output = T>,
+    {
+        fn await_singleton(self) -> T {
+            TokioSingleton::One().rt.block_on(self)
+        }
+    }
+
+    impl Default for TokioSingleton {
+        fn default() -> Self {
+            let rt = Builder::new_multi_thread()
+                .worker_threads(2)
+                .enable_all()
+                .build()
+                .unwrap();
+            Self { rt }
+        }
+    }
+}

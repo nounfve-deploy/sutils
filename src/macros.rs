@@ -9,43 +9,10 @@ macro_rules! MOD_USE_ALL {
     };
 }
 
+pub use sutils_macro::ExternImpl;
 pub use sutils_macro::FnWrap;
 pub use sutils_macro::PutInMacro;
 pub use sutils_macro::TraitExport;
-pub use sutils_macro::ExternImpl;
-
-#[macro_export]
-macro_rules! DEFINE {
-    (pub $Var:ident= $($Body:tt)*) => {
-        DEFINE!{impl
-            #[doc(hidden)]
-            #[macro_export]
-            $Var= $($Body)*
-        }
-        #[doc(inline)]
-        pub use $Var;
-    };
-    ($Vis:vis $Var:ident= $($Body:tt)*) => {
-        DEFINE!{$Vis impl
-            #[allow(unused_macros)]
-            $Var= $($Body)*
-        }
-        #[allow(unused)]
-        $Vis use $Var;
-    };
-    ($Vis:vis impl
-        $(#[$Meta:meta])*
-        $Var:ident= $($Body:tt)*
-    )=>{
-        $(#[$Meta])*
-        $Vis macro_rules! $Var {
-            ()=> { $($Body)*};
-            (^$head:tt)=> { $head $($Body)*};
-            (use $ident:ident)=> { $ident!($($Body)*)};
-            (const)=>{concat!($($Body)*)};
-        }
-    };
-}
 
 #[macro_export]
 macro_rules! inline_macro {
@@ -73,4 +40,4 @@ macro_rules! re_export {
 }
 
 re_export!(mod command);
-re_export!(mod exten_impl);
+re_export!(mod define);

@@ -3,7 +3,7 @@ use std::{
     hash::Hash,
 };
 
-use crate::DEFINE;
+use crate::macros::DEFINE;
 
 pub trait MapExt<K, V> {
     fn upsert(&mut self, k: K, v: Option<V>) -> bool;
@@ -29,7 +29,7 @@ DEFINE!( UPSERT =
             self.insert(k, val);
             return true;
         }
-        
+
         match self.remove(&k) {
             Some(_) => true,
             None => false,
