@@ -1,4 +1,3 @@
-
 #[sutils_macro::PutInMacro(inline_macro)]
 macro_rules! command {
     (async $($Any:tt)*)=>{
@@ -17,12 +16,13 @@ macro_rules! command_inner {
     (use $Cmd:ty,$Bin:expr => $($Arg:expr),*) => {
         $crate::macros::command_inner!(impl $Cmd, $Bin,.args([$($Arg,)*]))
     };
-    (impl $Cmd:ty, $Bin:expr, $($Trail:tt)*)=>{
-        <$Cmd>::new($Bin)
-            .env("RUST_LOG", "error")
-            .stdin(std::process::Stdio::inherit())
-            .stdout(std::process::Stdio::inherit())
-            .stderr(std::process::Stdio::inherit())
-            $($Trail)*
-    };
+    (impl $Cmd:ty, $Bin:expr, $($Trail:tt)*)=>{{
+            let mut cmd = <$Cmd>::new($Bin);
+            cmd.env("RUST_LOG", "error")
+                .stdin(std::process::Stdio::inherit())
+                .stdout(std::process::Stdio::inherit())
+                .stderr(std::process::Stdio::inherit())
+                $($Trail)*;
+            cmd
+    }};
 }

@@ -23,7 +23,7 @@ impl<'s> StrExt<'s> for &'s str {
 #[PutInMacro(inline_macro)] 
 macro_rules! env_or {
     ($S:ident) => {
-        &$crate::extension::str::StrExt::or_env($S, stringify!($S))
+        $crate::extension::str::StrExt::or_env($S, stringify!($S))
     };
 }
 

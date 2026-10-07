@@ -21,7 +21,6 @@ macro_rules! inline_macro {
         macro_rules! $M:ident $($B:tt)*
     ) => {
         #[macro_export]
-        #[doc(hidden)]
         $(#[$Meta])*
         macro_rules! $M $($B)*
 
