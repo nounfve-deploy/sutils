@@ -4,10 +4,10 @@ use crate::{IntoOption, inline_macro};
 
 pub trait StrExt<'s> {
     fn or_env(self, key: &str) -> std::borrow::Cow<'s, str>;
-    fn split_when<F: FnMut(char) -> bool>(self, f: F) -> SplitWhen<'s, F>;
+    fn split_when<F: FnMut(char) -> bool>(self, when: F) -> SplitWhen<'s, F>;
 }
 
-impl<'s, T: AsRef<str>> StrExt<'s> for &'s T {
+impl<'s, T: AsRef<str> + ?Sized> StrExt<'s> for &'s T {
     fn or_env(self, key: &str) -> std::borrow::Cow<'s, str> {
         let Ok(val) = std::env::var(key) else {
             return std::borrow::Cow::Borrowed(self.as_ref());
