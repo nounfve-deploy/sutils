@@ -7,20 +7,23 @@ pub trait StrExt<'s> {
     fn split_when<F: FnMut(char) -> bool>(self, f: F) -> SplitWhen<'s, F>;
 }
 
-impl<'s> StrExt<'s> for &'s str {
+impl<'s, T: AsRef<str>> StrExt<'s> for &'s T {
     fn or_env(self, key: &str) -> std::borrow::Cow<'s, str> {
         let Ok(val) = std::env::var(key) else {
-            return std::borrow::Cow::Borrowed(self);
+            return std::borrow::Cow::Borrowed(self.as_ref());
         };
         std::borrow::Cow::Owned(val)
     }
 
     fn split_when<F: FnMut(char) -> bool>(self, when: F) -> SplitWhen<'s, F> {
-        SplitWhen { remain: self, when }
+        SplitWhen {
+            remain: self.as_ref(),
+            when,
+        }
     }
 }
 
-#[PutInMacro(inline_macro)] 
+#[PutInMacro(inline_macro)]
 macro_rules! env_or {
     ($S:ident) => {
         $crate::extension::str::StrExt::or_env($S, stringify!($S))

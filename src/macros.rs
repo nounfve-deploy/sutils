@@ -40,3 +40,4 @@ macro_rules! re_export {
 
 re_export!(mod command);
 re_export!(mod define);
+re_export!(mod lazy_const);
